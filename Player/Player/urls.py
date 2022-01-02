@@ -1,4 +1,4 @@
-"""WMP URL Configuration
+"""Player URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.0/topics/http/urls/
@@ -15,11 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from MediaPlayer import views
-from MediaPlayer.views import Front
-front = Front()
+from Reproductor import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('up-csv/', views.up_csv, name= "up_csv"),
-    path('edit-csv/', views.edit_csv, name = "edit_csv"),
+    path('csv/', views.up_edit_csv, name = "csv"),
+    path('csv/actionfilecsv', views.up_file_csv, name = "actionfilecsv"),
+    path('csv/actiontextcsv', views.edit_file_csv, name = "actiontextcsv"),
+    path('xml/', views.up_edit_xml, name = "xml"),
+    path('xml/actionfilexml', views.up_file_xml, name = "actionfilexml"),
+    path('xml/actiontextxml', views.edit_file_xml, name = "actiontextxml")
 ]

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>CSV</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+</head>
+<body>
+    <div id = "up-csv">
+        <form action="actionfilecsv" method="post" enctype="multipart/form-data">{% csrf_token %}
+            <input type="file" name="upload-csv" id="upload-csv" accept=".csv,.CSV" required>
+            <input type="submit" value="Cargar Archivo" name = "subfile" id = "subfile">
+        </form>
+    </div>
+    <div id = "edit-csv">
+        <form action="actiontextcsv" method="post" enctype="multipart/form-data">{% csrf_token %}
+            <label for="text-csv">Errores en líneas: {{errores}}</label>
+            <textarea name="text-csv" id="text-csv" required placeholder="Editar o Crear CSV" cols="190" rows="30">{{csv}}</textarea>
+            <input type="submit" value="Convertir a XML" name = "subtext" id = "subtext">
+        </form>
+    </div>
+</body>
+</html>

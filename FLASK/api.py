@@ -1,7 +1,9 @@
 from flask import Flask
+from flask_cors import CORS
 app = Flask(__name__)
-@app.route("/verify-csv")
-def verify_csv():
+cors = CORS(app, resources = {r"/*":{"origin":"*"}})
+@app.route("/create-xml", methods = ['POST'])
+def getXMLPOSTXML():
     pass
 
 

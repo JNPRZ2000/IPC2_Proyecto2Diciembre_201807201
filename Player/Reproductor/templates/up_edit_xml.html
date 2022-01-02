@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>XML</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+</head>
+<body>
+    <div id = "up-xml">
+        <form action="actionfilexml" method="post" enctype="multipart/form-data">{% csrf_token %}
+            <input type="file" name="upload-xml" id="upload-xml" accept=".xml,.XML" required>
+            <input type="submit" value="Cargar Archivo" name = "subfile" id = "subfile">
+        </form>
+    </div>
+    <div id = "edit-xml">
+        <form action="actiontextxml" method="post" enctype="multipart/form-data">{% csrf_token %}
+            <label for="text-xml">Errores: {{errores}}</label>
+            <textarea name="text-xml" id="text-xml" required placeholder="Editar o Crear XML" cols="190" rows="30">{{xml}}</textarea>
+            <input type="submit" value="Guardar Datos" name = "subtext" id = "subtext">
+        </form>
+    </div>
+</body>
+</html>
