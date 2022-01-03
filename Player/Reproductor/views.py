@@ -1,11 +1,16 @@
+from typing import Dict
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 import re
 import copy
 import xml.etree.ElementTree as ET
+import xmltodict
+import json
+import requests
 class Front:
     def __init__(self):
         self.xml = ''
+        self.json = ''
 class Cancion:
     def __init__(self,cancion,album,artista,reproducciones,ruta,imagen):
         self.cancion = cancion
@@ -15,6 +20,7 @@ class Cancion:
         self.ruta = ruta
         self.imagen = imagen
 f = Front()
+endpoint = "http://127.0.0.1:5000/{}"
 # Create your views here.
 def up_edit_csv(request):
     return render(request, 'up_edit_csv.html')
@@ -29,21 +35,54 @@ def up_file_xml(request):
         document = request.FILES['upload-xml']
         f.xml = document.read().decode()
         return redirect("xml")
-
 def edit_file_xml(request):
     if request.POST["subtext"]:
         xml = request.POST["text-xml"]
+        root = ET.fromstring(xml)
+        dict_aux = dict()
+        for listas in root.iter('ListasReproduccion'):
+            for lista in listas.iter('Lista'):
+                dict_aux[lista.attrib['nombre']] = []
+                for cancion in lista.iter('cancion'):
+                    cancion_ = cancion.attrib["nombre"]
+                    album_ = ""
+                    artista_ = ""
+                    reproducciones_ = ""
+                    ruta_ = ""
+                    imagen_ = "" 
+                    for artista,album,reproducciones,imagen,ruta in zip(
+                        cancion.iter("artista"),cancion.iter("album"),cancion.iter("vecesReproducida"),
+                        cancion.iter("imagen"),cancion.iter("ruta")):
+                        album_ += str(album.text)
+                        artista_ += str(artista.text)
+                        reproducciones_ += str(reproducciones.text)
+                        ruta_ += str(ruta.text)
+                        imagen_ += str(imagen.text)
+                    songdict = {"cancion": cancion_, "album": album_, "artista": artista_, "reproducciones": int(reproducciones_),
+                    "ruta": ruta_, "imagen": imagen_}
+                    dict_aux[lista.attrib['nombre']].append(songdict)
+        json_aux = json.dumps(dict_aux)
+        with open("json_object.json","w") as file:
+            file.write(json_aux)
+            file.close()
+        url = endpoint.format("/receive-json")
+        receive_json = requests.post(url, json= json_aux
+        )
+        f.json = receive_json.json()
+        print("receive: {}".format(receive_json.json()))
         tree = ET.fromstring(xml)
         tree = ET.ElementTree(tree)
         tree.write("CSV Convertido.xml", encoding ='utf-8', xml_declaration = True)
-        return HttpResponse(xml)
+        return redirect('viewcontent')
+
+def view_content(request):
+    diccionario = (f.json)
+    return render(request, 'view_content.html', {"dict":diccionario, "headers": ["cancion","album","artista","reproducciones"]})
 
 def up_file_csv(request):
     if request.POST["subfile"]:
         document = request.FILES['upload-csv']
-        #csv = document.read().decode("utf-8")
         csv = str(document.read().decode("UTF-8"))
-        print("Csv: {}".format(csv))
         csv = csv.replace("\\","/")
         errores = validateCsv(csv)
         return render(request, "up_edit_csv.html", {"csv": csv, "errores": errores})
@@ -89,22 +128,21 @@ def toXML(csv):
             ET.SubElement(nieto, "artista").text = "{}".format(song.artista)
             ET.SubElement(nieto, "album").text = "{}".format(song.album)
             ET.SubElement(nieto, "vecesReproducida").text = "{}".format(song.reproducciones)
-            ET.SubElement(nieto, "imagen").text = '{}'.format(song.imagen)
+            img = str(song.imagen)
+            img = img.rstrip("\n")
+            ET.SubElement(nieto, "imagen").text = '{}'.format(img)
             ET.SubElement(nieto, "ruta").text = "{}".format(song.ruta)
             xml += '\t\t<cancion nombre = "{}">\n'.format(song.cancion)
             xml += '\t\t\t<artista>{}</artista>\n'.format(song.artista)
             xml += '\t\t\t<album>{}</album>\n'.format(song.album)
             xml += '\t\t\t<vecesReproducida>{}</vecesReproducida>\n'.format(song.reproducciones)
-            xml += '\t\t\t<imagen>{}</imagen>\n'.format(song.imagen)
+            xml += '\t\t\t<imagen>{}</imagen>\n'.format(img)
             xml += '\t\t\t<ruta>{}</ruta>\n'.format(song.ruta)
-            xml += '\t\t</Cancion>\n'
+            xml += '\t\t</cancion>\n'
         xml += '\t</Lista>\n'
     xml += "</ListasReproduccion>"
     tree = ET.ElementTree(root)
     tree.write("CSV Convertido.xml", encoding ='utf-8', xml_declaration = True)
-    #ith open('csv_to_xml.xml', 'w') as f:
-    #    f.write(xml)
-    #    f.close()
     return xml
 def csv_to_dict(csv):
     lines = csv.split("\n")

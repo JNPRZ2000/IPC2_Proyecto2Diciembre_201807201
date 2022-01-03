@@ -24,5 +24,6 @@ urlpatterns = [
     path('csv/actiontextcsv', views.edit_file_csv, name = "actiontextcsv"),
     path('xml/', views.up_edit_xml, name = "xml"),
     path('xml/actionfilexml', views.up_file_xml, name = "actionfilexml"),
-    path('xml/actiontextxml', views.edit_file_xml, name = "actiontextxml")
+    path('xml/actiontextxml', views.edit_file_xml, name = "actiontextxml"),
+    path('viewcontent/', views.view_content, name = "viewcontent")
 ]

@@ -7,6 +7,9 @@
     <meta name='viewport' content='width=device-width, initial-scale=1'>
 </head>
 <body>
+    <div id = "header">
+        <a href="{% url 'csv' %}">Carga y Edición CSV</a>
+    </div>
     <div id = "up-xml">
         <form action="actionfilexml" method="post" enctype="multipart/form-data">{% csrf_token %}
             <input type="file" name="upload-xml" id="upload-xml" accept=".xml,.XML" required>

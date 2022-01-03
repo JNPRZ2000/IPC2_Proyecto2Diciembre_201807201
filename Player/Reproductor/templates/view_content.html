@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Contenido</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+</head>
+<body>
+    <div id="header">
+        <a href="{% url 'csv' %}">Agregar contenido</a>
+    </div>
+    <div>
+        <table>
+            {% for key, value in dict.items %}
+                <tr><th>{{key}}</th></tr>
+                        {% for element in value %}
+                        <form action="reproducir" method="post">
+                            <tr>
+                                {% for clave, valor in element.items %}
+                                    {% if clave in headers %}
+                                        <td>{{valor}}</td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                        </form>
+                        {% endfor %}>
+                    </tr>
+            {% endfor %}
+        </table>
+        
+    </div>
+</body>
+</html>
