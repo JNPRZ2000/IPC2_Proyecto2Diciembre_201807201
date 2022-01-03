@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,10 +6,12 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>XML</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='{% static "up_edit.css" %}'>
 </head>
 <body>
     <div id = "header">
         <a href="{% url 'csv' %}">Carga y Edición CSV</a>
+        <a href="{% url 'info' %}">Información del Estudiante</a>
     </div>
     <div id = "up-xml">
         <form action="actionfilexml" method="post" enctype="multipart/form-data">{% csrf_token %}
@@ -18,7 +21,6 @@
     </div>
     <div id = "edit-xml">
         <form action="actiontextxml" method="post" enctype="multipart/form-data">{% csrf_token %}
-            <label for="text-xml">Errores: {{errores}}</label>
             <textarea name="text-xml" id="text-xml" required placeholder="Editar o Crear XML" cols="190" rows="30">{{xml}}</textarea>
             <input type="submit" value="Guardar Datos" name = "subtext" id = "subtext">
         </form>

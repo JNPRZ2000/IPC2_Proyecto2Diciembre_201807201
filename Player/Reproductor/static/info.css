@@ -1,0 +1,34 @@
+#header{
+    background-color: rgb(105, 105, 105);
+    position: fixed;
+    width: 100%;
+    height: 50px;
+    color: white;
+    top: 0;
+    left: 0;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    display: flex;
+    align-items: center;
+}
+#header form{
+    color: white;
+    text-decoration: none;
+    margin-left: 30px;
+    font-size: larger;
+    font-weight: 500;
+    margin-right: 30px;
+}
+#padre{
+    margin-top: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+h2,h4{
+    text-align: center;
+}
+#header form button{
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-radius: 00.7em;
+}

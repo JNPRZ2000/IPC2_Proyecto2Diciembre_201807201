@@ -1,16 +1,20 @@
-from typing import Dict
+from typing import Dict, OrderedDict
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 import re
 import copy
 import xml.etree.ElementTree as ET
-import xmltodict
 import json
 import requests
+
+
 class Front:
     def __init__(self):
         self.xml = ''
         self.json = ''
+        self.est_listas = dict()
+        self.est_artistas = dict()
+        self.est_canciones = dict()
 class Cancion:
     def __init__(self,cancion,album,artista,reproducciones,ruta,imagen):
         self.cancion = cancion
@@ -77,7 +81,80 @@ def edit_file_xml(request):
 
 def view_content(request):
     diccionario = (f.json)
+    url = endpoint.format("/peticion")
+    peticion = requests.post(url)
+    diccionario = peticion.json()
     return render(request, 'view_content.html', {"dict":diccionario, "headers": ["cancion","album","artista","reproducciones"]})
+
+def reproducir(request, lista):
+    lis = str(lista)
+    lis = lis.split("+")
+    listR = lis[0]
+    cancion = lis[1]
+    album = lis[2]
+    artista = lis[3]
+    url = endpoint.format('/peticion')
+    peticion = requests.post(url)
+    diccionario = peticion.json()
+    ruta = ""
+    imagen = ""
+    for keylist in diccionario:
+        if keylist == listR:
+            for song in diccionario[keylist]:
+                if song["cancion"] == cancion:
+                    song["reproducciones"] = int(song["reproducciones"]) + 1
+                    ruta += str(song["ruta"])
+                    imagen += str(song["imagen"])
+    json_obj = json.dumps(diccionario)
+    url = endpoint.format("/actualizacion")
+    actualize = requests.post(url, json = json_obj)
+    if listR in f.est_listas:
+        f.est_listas[listR] += 1
+    else:
+        f.est_listas[listR] = 1
+    if cancion in f.est_canciones:
+        f.est_canciones[cancion] += 1
+    else:
+        f.est_canciones[cancion] = 1
+    if artista in f.est_artistas:
+        f.est_artistas[artista] += 1
+    else:
+        f.est_artistas[artista] = 1
+    return render(request, 'reproducir.html',{'cancion':cancion,'album':album,'artista':artista, 'ruta': ruta, 'imagen': imagen})
+def estadisticas(request):
+    f.est_listas = OrderedDict(sorted(f.est_listas.items(), key = lambda x : x[1]))
+    f.est_canciones = OrderedDict(sorted(f.est_canciones.items(), key = lambda x : x[1]))
+    f.est_artistas = OrderedDict(sorted(f.est_artistas.items(), key = lambda x: x[1]))
+    clavesLista = []
+    valoresLista = []
+    clavesCanciones = []
+    valoresCanciones = []
+    clavesArtistas = []
+    valoresArtistas = []
+    for lista, cancion, artista in zip(f.est_listas, f.est_canciones, f.est_artistas):
+        clavesLista.append(lista)
+        valoresLista.append(f.est_listas[lista])
+        clavesCanciones.append(cancion)
+        valoresCanciones.append(f.est_canciones[cancion])
+        clavesArtistas.append(artista)
+        valoresArtistas.append(f.est_artistas[artista])
+    if len(clavesLista) > 5:
+        clavesLista = clavesLista[(len(clavesLista)-6), (len(clavesLista)-1)]
+        valoresLista = valoresLista[(len(clavesLista)-6), (len(clavesLista)-1)]
+    if len(clavesCanciones) > 5:
+        clavesCanciones = clavesCanciones[(len(clavesCanciones)-6), (len(clavesCanciones)-1)]
+        valoresCanciones = valoresCanciones[(len(clavesCanciones)-6), (len(clavesCanciones)-1)]
+    if len(clavesArtistas) > 5:
+        clavesArtistas = clavesArtistas[(len(clavesArtistas)-6), (len(clavesArtistas)-1)]
+        valoresArtistas = valoresArtistas[(len(clavesArtistas)-6), (len(clavesArtistas)-1)]
+    dictEst = {"claveslista": clavesLista, "valoreslista": valoresLista, "clavescanciones": clavesCanciones,
+    "valorescanciones": valoresCanciones, "clavesartistas":clavesArtistas, "valoresartistas": valoresArtistas}
+    json_obj = json.dumps(dictEst)
+    url = endpoint.format("/estadisticas")
+    graph = requests.post(url, json = json_obj)    
+    return render(request, 'estadisticas.html')
+def info(request):
+    return render(request, 'info.html')
 
 def up_file_csv(request):
     if request.POST["subfile"]:

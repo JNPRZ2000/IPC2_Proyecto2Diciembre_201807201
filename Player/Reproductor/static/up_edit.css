@@ -1,0 +1,52 @@
+#header{
+    background-color: rgb(105, 105, 105);
+    position: fixed;
+    width: 100%;
+    height: 30px;
+    color: white;
+    top: 0;
+    left: 0;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+#header a{
+    color: white;
+    text-decoration: none;
+    margin-left: 30px;
+    font-size: larger;
+    font-weight: 500;
+    margin-right: 30px;
+}
+#up-xml,#up-csv{
+    position: absolute;
+    top: 100px;
+}
+#edit-xml,#edit-csv{
+    position: absolute;
+    top: 200px;
+    margin-right: auto;
+}
+#up-xml,#up-csv{
+    background-color: rgb(105, 105, 105);
+    padding-left: 35px;
+    padding-right: 35px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    border-radius: 00.7em;
+}
+#text-xml,#text-csv{
+    background-color: #999;
+    color: white;
+    grid-row: 1;
+}
+#subtext{
+    float: left;
+    width: 400px;
+    background-color: #999;
+    color: white;
+    height: 50px;
+    border-radius: 00.7em;
+}
+label{
+    background-color: #999;
+    
+}

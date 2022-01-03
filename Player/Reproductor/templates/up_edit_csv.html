@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,10 +6,12 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>CSV</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='{% static "up_edit.css" %}'>
 </head>
 <body>
     <div id = "header">
         <a href="{% url 'xml'%}">Carga y Edición XML</a>
+        <a href="{% url 'info' %}">Información del Estudiante</a>
     </div>
     <div id = "up-csv">
         <form action="actionfilecsv" method="post" enctype="multipart/form-data">{% csrf_token %}

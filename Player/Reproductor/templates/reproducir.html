@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>{{cancion}}</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='{% static "reproducir.css" %}'>
+</head>
+<body>
+    <div id="header">
+        <a href="{% url 'viewcontent' %}">Regresar</a>
+    </div>
+    <div id = "padre">
+        <div id="reproductor">
+            <iframe src="{{ruta}}"></iframe>
+        </div>
+        <div id="labels">
+            <table>
+                <tr><td><Label>Cancion: {{cancion}}</Label></td></tr>
+                <tr><td><Label>Album: {{album}}</Label></td></tr>
+                <tr><td><Label>Artista: {{artista}}</Label></td></tr>
+            </table>
+        </div>
+        <div id="imagen">
+            <img src="{{imagen}}" alt="Image Album">
+        </div>
+    </div>
+    
+</body>
+</html>
